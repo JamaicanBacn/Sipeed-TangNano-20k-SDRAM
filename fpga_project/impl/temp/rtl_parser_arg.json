@@ -1,0 +1,20 @@
+{
+    "Device": "GW2AR-18",
+    "Files": [
+        {
+            "Path": "C:/Repositories/Sipeed-TangNano-20k-SDRAM/fpga_project/src/SDRAM.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/Repositories/Sipeed-TangNano-20k-SDRAM/fpga_project/src/SDRAMTop.sv",
+            "Type": "verilog"
+        }
+    ],
+    "IncludePath": [
+    ],
+    "LoopLimit": 2000,
+    "ResultFile": "C:/Repositories/Sipeed-TangNano-20k-SDRAM/fpga_project/impl/temp/rtl_parser.result",
+    "Top": "",
+    "VerilogStd": "verilog_2001",
+    "VhdlStd": "vhdl_93"
+}
