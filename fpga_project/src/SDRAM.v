@@ -1,16 +1,25 @@
+/*
 
+Maximus Darby
+
+----------------
+Inspiration from Nand2mario tangnano 20k sdram but optimized
+for caching.
+
+*/
 
 
 module SDRAM 
 #(
-    parameter FREQ = 27000000,  // Default freq of tang nano20k
-    parameter T_MRD, // Mode register set latency   
-    parameter T_RCD, // RAS to CAS Latency
-    parameter T_RP,   // RAS Prechrage latency
-    parameter T_CAS, // Delay until Data appears on output
-    parameter T_WR,  // Delay until row can be closed follwoing a write
-    parameter T_RC, // Delay until RAS can be executed again
-    parameter T_BL, // Delay burst length
+    parameter FREQ  = 27000000,     // Default freq of tang nano20k
+    parameter T_MRD = 4'd2,         // Mode register set latency   
+    parameter T_RCD = 4'd2,         // RAS to CAS Latency
+    parameter T_RP  = 4'd4,         // RAS Prechrage latency
+    parameter T_CAS = 4'd2 ,        // Delay until Data appears on output
+    parameter T_WR  = 4'd1,         // Delay until row can be closed follwoing a write
+    parameter T_RC  = 4'd2,         // Delay until RAS can be executed again
+    parameter T_BL  = 4'd8,         // Delay burst length
+    parameter T_CL  = 4'd1          // delay until data is available
 
 )
 (
@@ -24,7 +33,7 @@ module SDRAM
     output reg CAS, // Col to access
     output reg RAS, // Row to access
     output reg WE, // Write enable
-    output reg CL, // the latency from RAS to CAS
+    output reg CL , // the latency from RAS to CAS
 
     output reg busy, // Instruction in progress
 
@@ -38,13 +47,7 @@ module SDRAM
     output reg[1:0] Bank_Bits_out, // Bank adress 
     output reg[10:0] Address_out // Input adress bus
 
-
-
-
-
-
 );
-
 
 // Convert the FREQ to the amount of cycles in 15us
 // once this count is reached the sdram needs a refresh
@@ -101,6 +104,9 @@ reg[15:0] refresh_counter; // refresh manager
 reg [22:0]Address_buffer;   // Holds current address
 reg [31:0]Data_buffer;      // Data address to write to 
 
+assign CL = T_CL;
+assign CS = 0; // Chip select is active low , allows chip to always run
+
 
 // state logic here 
 always @(posedge clk) begin
@@ -118,8 +124,6 @@ always @(posedge clk) begin
         STATE <= STARTUP;        
     end
 
-
-    refresh_needed <= refresh_counter >= CYCLES_TO_REFRESH; 
 
     casex ( { STATE , cycle_counter} ) 
         
@@ -161,7 +165,7 @@ always @(posedge clk) begin
         end
 
 
-        // Waiting for commands
+        /**/
         { IDLE , 15'bx } : if ( refresh ) begin
             STATE <= REFRESH;
             { RAS , CAS , WE} <= REFRESH;
@@ -195,7 +199,7 @@ always @(posedge clk) begin
 
         end
 
-        { READ , T_RCD + T_CAS + T_BL} begin
+        { READ , T_RCD + T_CAS + T_BL + T_RP} begin
             STATE <= IDLE;
             cycle_counter <= 0;
             busy <= 0;
@@ -209,7 +213,7 @@ always @(posedge clk) begin
 
         end
 
-        {WRITE , T_RCD + T_WR + T_BL} : begin
+        {WRITE , T_RCD + T_WR + T_BL + T_RP}: begin
             STATE <= IDLE;
             cycle_counter <= 0;
             busy <= 0;
@@ -218,59 +222,17 @@ always @(posedge clk) begin
         {REFRESH , T_RC } : begin
             STATE <= IDLE;
             busy <= 0;
+            refresh_counter <= refresh_counter - CYCLES_TO_REFRESH;
+            refresh_needed <= 0;
         end
             
                 
 
 
     endcase
-
+    
+    refresh_needed <= refresh_counter >= CYCLES_TO_REFRESH; 
 
 end
-
-/*
-
-Notes:
-    Either SDRAM or FPGA can drive the data line.
-    if both try at the same time a short occurs.
-    When neither are using the line us HIGH Z to cut inputs.
-
-    ** WILL DESTORY SDRAM IF IMPLEMENTED WRONG **
-
-    RAS : HIGH Z
-
-    CAS - WRITE : FPGA DRIVES
-    CAS - READ  : DRAM DRIVES 
-
-Init:
-    Precharge and wait 200us
-    Refresh
-    Refresh
-    Set Controller Mode
-
-READ:
-    Load RAS command with precharge and Row addr
-    Load CAS command with col addr after TRCD
-    2 cycles later data is availible.
-
-
-
-
-WRITE:
-    Load Ras command with precharge and Row addr
-    Load Cas command with WE and col addr after TRCD
-    Data will the be placed into the SDRA
-REFRESH:
-    every 15us check if a command is running.
-    If not send refresh command.
-    Wait refresh time and return to exec.
-    If a command is running wait until done and refresh.
-
-
-
-
-*/
-
-
 
 endmodule;
