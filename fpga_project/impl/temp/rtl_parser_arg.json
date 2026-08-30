@@ -8,6 +8,18 @@
         {
             "Path": "C:/Repositories/Sipeed-TangNano-20k-SDRAM/fpga_project/src/SDRAMTop.sv",
             "Type": "verilog"
+        },
+        {
+            "Path": "C:/Repositories/Sipeed-TangNano-20k-SDRAM/fpga_project/src/rpll/gowin_rpll.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/Repositories/Sipeed-TangNano-20k-SDRAM/fpga_project/src/rpll/gowin_rpll_tmp.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/Repositories/Sipeed-TangNano-20k-SDRAM/fpga_project/src/gowin_rpll/gowin_rpll.v",
+            "Type": "verilog"
         }
     ],
     "IncludePath": [
