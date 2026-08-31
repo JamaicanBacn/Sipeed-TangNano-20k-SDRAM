@@ -1,0 +1,35 @@
+[*]
+[*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
+[*] Mon Aug 31 01:54:04 2026
+[*]
+[dumpfile] "/mnt/c/Repositories/Sipeed-TangNano-20k-SDRAM/Waveforms/FSM_verification.fst"
+[dumpfile_mtime] "Mon Aug 31 01:49:54 2026"
+[dumpfile_size] 23066
+[savefile] "/mnt/c/Repositories/Sipeed-TangNano-20k-SDRAM/gtkSettings/SDRAM.gtkw"
+[timestart] 54008
+[size] 3840 2053
+[pos] -27 -24
+*0.000000 54015 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[sst_width] 297
+[signals_width] 370
+[sst_expanded] 1
+[sst_vpaned_height] 663
+@22
+TOP.SDRAM.Address_out[10:0]
+@28
+TOP.SDRAM.CAS
+TOP.SDRAM.RAS
+TOP.SDRAM.STATE[2:0]
+@29
+TOP.SDRAM.clk
+@28
+TOP.SDRAM.WE
+@22
+TOP.SDRAM.burst_counter[4:0]
+TOP.SDRAM.cycle_counter[31:0]
+TOP.SDRAM.refresh_counter[31:0]
+@28
+TOP.SDRAM.refresh_needed
+[pattern_trace] 1
+[pattern_trace] 0

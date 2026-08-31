@@ -1,0 +1,1 @@
+/mnt/c/Repositories/Sipeed-TangNano-20k-SDRAM/fpga_project/src/SDRAM.v
