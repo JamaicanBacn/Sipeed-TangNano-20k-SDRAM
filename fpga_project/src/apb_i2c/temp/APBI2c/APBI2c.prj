@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gowin-synthesis-project>
+<Project>
+    <Version>beta</Version>
+    <Device id="GW2AR-18" package="QFN88" speed="8" partNumber="GW2AR-LV18QN88C8/I7"/>
+    <FileList>
+        <File path="C:/Gowin/Gowin_V1.9.12.03_x64/IDE/ipcore/APBI2C/data/apb_i2c_top.v" type="verilog"/>
+        <File path="C:/Gowin/Gowin_V1.9.12.03_x64/IDE/ipcore/APBI2C/data/apb_i2c.v" type="verilog"/>
+    </FileList>
+    <OptionList>
+        <Option type="disable_insert_pad" value="1"/>
+        <Option type="include_path" value="C:/Gowin/Gowin_V1.9.12.03_x64/IDE/ipcore/APBI2C/data"/>
+        <Option type="include_path" value="C:/Repositories/Sipeed-TangNano-20k-SDRAM/fpga_project/src/apb_i2c/temp/APBI2c"/>
+        <Option type="ip_version" value="1.0"/>
+        <Option type="output_file" value="apb_i2c.vg"/>
+        <Option type="output_template" value="apb_i2c_tmp.v"/>
+        <Option type="ram_balance" value="1"/>
+        <Option type="ram_rw_check" value="1"/>
+        <Option type="vcc" value="1.0"/>
+        <Option type="vccx" value="3.3"/>
+        <Option type="verilog_language" value="sysv-2017"/>
+    </OptionList>
+</Project>

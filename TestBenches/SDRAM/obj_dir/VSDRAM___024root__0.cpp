@@ -28,6 +28,8 @@ void VSDRAM___024root___nba_sequent__TOP__0(VSDRAM___024root* vlSelf) {
     __Vdly__SDRAM__DOT__cycle_counter = 0;
     IData/*31:0*/ __Vdly__SDRAM__DOT__refresh_counter;
     __Vdly__SDRAM__DOT__refresh_counter = 0;
+    IData/*31:0*/ __Vdly__SDRAM__DOT__burst_counter;
+    __Vdly__SDRAM__DOT__burst_counter = 0;
     CData/*2:0*/ __Vdly__SDRAM__DOT__STATE;
     __Vdly__SDRAM__DOT__STATE = 0;
     CData/*0:0*/ __Vdly__SDRAM__DOT__refresh_needed;
@@ -35,9 +37,10 @@ void VSDRAM___024root___nba_sequent__TOP__0(VSDRAM___024root* vlSelf) {
     IData/*22:0*/ __Vdly__SDRAM__DOT__Address_buffer;
     __Vdly__SDRAM__DOT__Address_buffer = 0;
     // Body
-    __Vdly__SDRAM__DOT__STATE = vlSelfRef.SDRAM__DOT__STATE;
     __Vdly__SDRAM__DOT__refresh_needed = vlSelfRef.SDRAM__DOT__refresh_needed;
     __Vdly__SDRAM__DOT__Address_buffer = vlSelfRef.SDRAM__DOT__Address_buffer;
+    __Vdly__SDRAM__DOT__burst_counter = vlSelfRef.SDRAM__DOT__burst_counter;
+    __Vdly__SDRAM__DOT__STATE = vlSelfRef.SDRAM__DOT__STATE;
     __Vdly__SDRAM__DOT__cycle_counter = vlSelfRef.SDRAM__DOT__cycle_counter;
     __Vdly__SDRAM__DOT__refresh_counter = vlSelfRef.SDRAM__DOT__refresh_counter;
     __Vdly__SDRAM__DOT__cycle_counter = ((IData)(1U) 
@@ -46,155 +49,207 @@ void VSDRAM___024root___nba_sequent__TOP__0(VSDRAM___024root* vlSelf) {
         __Vdly__SDRAM__DOT__refresh_counter = ((IData)(1U) 
                                                + vlSelfRef.SDRAM__DOT__refresh_counter);
     }
-    vlSelfRef.DQM_out = 0U;
     if (vlSelfRef.reset) {
+        __Vdly__SDRAM__DOT__burst_counter = 0U;
+        __Vdly__SDRAM__DOT__STATE = 7U;
+        __Vdly__SDRAM__DOT__cycle_counter = 0U;
+        vlSelfRef.ReadReady = 0U;
+        vlSelfRef.WriteReady = 0U;
+        vlSelfRef.SDRAM__DOT__output_enable = 0U;
+        vlSelfRef.SDRAM__DOT__startRefreshCount = 0U;
         __Vdly__SDRAM__DOT__cycle_counter = 0U;
         vlSelfRef.SDRAM__DOT__startRefreshCount = 0U;
+        __Vdly__SDRAM__DOT__burst_counter = 0U;
         __Vdly__SDRAM__DOT__STATE = 7U;
-    }
-    if (((((((((0x0000000700000000ULL == (0x0000000700000000ULL 
-                                          & (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+        vlSelfRef.SDRAM__DOT__output_enable = 0U;
+    } else {
+        if (((((((((0x0000000700000000ULL == (0x0000000700000000ULL 
+                                              & (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                                  << 0x00000020U) 
+                                                 | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) 
+                   | (0x0000000600000000ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                                 << 0x00000020U) 
+                                                | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) 
+                  | ((0x0000000600000001ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                                 << 0x00000020U) 
+                                                | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))) 
+                     || (0x0000000600000005ULL == (
+                                                   ((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                                    << 0x00000020U) 
+                                                   | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))))) 
+                 | (0x0000000600000009ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                               << 0x00000020U) 
+                                              | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) 
+                | (0x000000060000000bULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
                                               << 0x00000020U) 
                                              | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) 
-               | (0x0000000600000000ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                             << 0x00000020U) 
-                                            | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) 
-              | ((0x0000000600000004ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                             << 0x00000020U) 
-                                            | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))) 
-                 || (0x0000000600000006ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                                << 0x00000020U) 
-                                               | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))))) 
-             | (0x0000000600000008ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                           << 0x00000020U) 
-                                          | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) 
-            | (0x000000060000000aULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                          << 0x00000020U) 
-                                         | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) 
-           | (0ULL == (0x0000000700000000ULL & (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                                 << 0x00000020U) 
-                                                | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))))) 
-          | (0x0000000500000002ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                        << 0x00000020U) 
-                                       | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) 
-         | (0x0000000500000010ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                       << 0x00000020U) 
-                                      | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))))) {
-        if ((0x0000000700000000ULL == (0x0000000700000000ULL 
-                                       & (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+               | (0ULL == (0x0000000700000000ULL & 
+                           (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                             << 0x00000020U) | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))))) 
+              | (0x0000000500000001ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                            << 0x00000020U) 
+                                           | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) 
+             | (0x000000050000000cULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
                                            << 0x00000020U) 
                                           | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))))) {
-            if ((0x00001518U <= vlSelfRef.SDRAM__DOT__cycle_counter)) {
-                __Vdly__SDRAM__DOT__STATE = 6U;
-                __Vdly__SDRAM__DOT__refresh_counter = 0U;
-                __Vdly__SDRAM__DOT__refresh_needed = 0U;
-                __Vdly__SDRAM__DOT__cycle_counter = 0U;
-            }
-        } else if ((0x0000000600000000ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+            if ((0x0000000700000000ULL == (0x0000000700000000ULL 
+                                           & (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
                                                << 0x00000020U) 
-                                              | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) {
-            vlSelfRef.Address_out = (0x00000400U | (IData)(vlSelfRef.Address_out));
-            vlSelfRef.RAS = 0U;
-            vlSelfRef.CAS = 1U;
-            vlSelfRef.WE = 0U;
-        } else if (((0x0000000600000004ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                                << 0x00000020U) 
-                                               | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))) 
-                    || (0x0000000600000006ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                              | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))))) {
+                if ((0x00001518U <= vlSelfRef.SDRAM__DOT__cycle_counter)) {
+                    __Vdly__SDRAM__DOT__STATE = 6U;
+                    __Vdly__SDRAM__DOT__refresh_counter = 0U;
+                    __Vdly__SDRAM__DOT__refresh_needed = 0U;
+                    __Vdly__SDRAM__DOT__cycle_counter = 0U;
+                }
+            } else if ((0x0000000600000000ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
                                                    << 0x00000020U) 
-                                                  | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))))) {
-            vlSelfRef.RAS = 0U;
-            vlSelfRef.CAS = 0U;
-            vlSelfRef.WE = 1U;
-        } else if ((0x0000000600000008ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                               << 0x00000020U) 
-                                              | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) {
-            vlSelfRef.RAS = 0U;
-            vlSelfRef.CAS = 0U;
-            vlSelfRef.WE = 0U;
-            vlSelfRef.Address_out = 0x0023U;
-        } else if ((0x000000060000000aULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                               << 0x00000020U) 
-                                              | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) {
-            __Vdly__SDRAM__DOT__STATE = 0U;
-            vlSelfRef.busy = 0U;
-            vlSelfRef.SDRAM__DOT__startRefreshCount = 1U;
-            __Vdly__SDRAM__DOT__cycle_counter = 0U;
-        } else if ((0ULL == (0x0000000700000000ULL 
-                             & (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                 << 0x00000020U) | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))))) {
-            if (vlSelfRef.SDRAM__DOT__refresh_needed) {
-                __Vdly__SDRAM__DOT__STATE = 1U;
+                                                  | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) {
+                vlSelfRef.Address_out = (0x00000400U 
+                                         | (IData)(vlSelfRef.Address_out));
+                vlSelfRef.RAS = 0U;
+                vlSelfRef.CAS = 1U;
+                vlSelfRef.WE = 0U;
+            } else if (((0x0000000600000001ULL == (
+                                                   ((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                                    << 0x00000020U) 
+                                                   | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))) 
+                        || (0x0000000600000005ULL == 
+                            (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                              << 0x00000020U) | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))))) {
                 vlSelfRef.RAS = 0U;
                 vlSelfRef.CAS = 0U;
                 vlSelfRef.WE = 1U;
-                __Vdly__SDRAM__DOT__cycle_counter = 1U;
-                vlSelfRef.busy = 1U;
-            } else if (((IData)(vlSelfRef.read) | (IData)(vlSelfRef.write))) {
+            } else if ((0x0000000600000009ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                                   << 0x00000020U) 
+                                                  | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) {
                 vlSelfRef.RAS = 0U;
-                vlSelfRef.CAS = 1U;
-                vlSelfRef.WE = 1U;
-                vlSelfRef.Bank_Bits_out = (3U & (vlSelfRef.SDRAM__DOT__Address_buffer 
-                                                 >> 0x0000000bU));
-                __Vdly__SDRAM__DOT__STATE = ((IData)(vlSelfRef.read)
-                                              ? 5U : 4U);
-                if (vlSelfRef.write) {
-                    vlSelfRef.SDRAM__DOT__Data_buffer = 0U;
+                vlSelfRef.CAS = 0U;
+                vlSelfRef.WE = 0U;
+                vlSelfRef.Address_out = 0x0023U;
+            } else if ((0x000000060000000bULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                                   << 0x00000020U) 
+                                                  | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) {
+                __Vdly__SDRAM__DOT__STATE = 0U;
+                vlSelfRef.busy = 0U;
+                vlSelfRef.SDRAM__DOT__startRefreshCount = 1U;
+                __Vdly__SDRAM__DOT__cycle_counter = 0U;
+            } else if ((0ULL == (0x0000000700000000ULL 
+                                 & (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                     << 0x00000020U) 
+                                    | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))))) {
+                if (vlSelfRef.SDRAM__DOT__refresh_needed) {
+                    __Vdly__SDRAM__DOT__STATE = 1U;
+                    vlSelfRef.RAS = 0U;
+                    vlSelfRef.CAS = 0U;
+                    vlSelfRef.WE = 1U;
+                    __Vdly__SDRAM__DOT__cycle_counter = 1U;
+                    vlSelfRef.busy = 1U;
+                } else if (((IData)(vlSelfRef.read) 
+                            | (IData)(vlSelfRef.write))) {
+                    vlSelfRef.RAS = 0U;
+                    vlSelfRef.CAS = 1U;
+                    vlSelfRef.WE = 1U;
+                    vlSelfRef.Bank_Bits_out = (3U & 
+                                               (vlSelfRef.SDRAM__DOT__Address_buffer 
+                                                >> 0x0000000bU));
+                    __Vdly__SDRAM__DOT__STATE = ((IData)(vlSelfRef.read)
+                                                  ? 5U
+                                                  : 4U);
+                    if (vlSelfRef.write) {
+                        vlSelfRef.SDRAM__DOT__Data_buffer 
+                            = vlSelfRef.Data_in;
+                    }
+                    vlSelfRef.WriteReady = (1U & (~ (IData)(vlSelfRef.read)));
+                    __Vdly__SDRAM__DOT__cycle_counter = 1U;
+                    vlSelfRef.busy = 1U;
+                    __Vdly__SDRAM__DOT__burst_counter = 0U;
+                    vlSelfRef.Address_out = (0x000007ffU 
+                                             & vlSelfRef.SDRAM__DOT__Address_buffer);
+                    __Vdly__SDRAM__DOT__Address_buffer 
+                        = vlSelfRef.Address_in;
                 }
-                __Vdly__SDRAM__DOT__cycle_counter = 1U;
-                vlSelfRef.busy = 1U;
-                vlSelfRef.SDRAM__DOT__burst_counter = 0U;
-                vlSelfRef.Address_out = (0x000007ffU 
-                                         & vlSelfRef.SDRAM__DOT__Address_buffer);
-                __Vdly__SDRAM__DOT__Address_buffer 
-                    = vlSelfRef.Address_in;
+            } else if ((0x0000000500000001ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                                   << 0x00000020U) 
+                                                  | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) {
+                vlSelfRef.RAS = 1U;
+                vlSelfRef.CAS = 0U;
+                vlSelfRef.WE = 1U;
+                vlSelfRef.Address_out = (0x00000400U 
+                                         | (0x000003ffU 
+                                            & (vlSelfRef.SDRAM__DOT__Address_buffer 
+                                               >> 0x0000000dU)));
+            } else {
+                __Vdly__SDRAM__DOT__STATE = 0U;
+                __Vdly__SDRAM__DOT__cycle_counter = 0U;
+                vlSelfRef.busy = 0U;
+                __Vdly__SDRAM__DOT__burst_counter = 0U;
+                vlSelfRef.SDRAM__DOT__output_enable = 0U;
+                vlSelfRef.ReadReady = 0U;
             }
-        } else if ((0x0000000500000002ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+        } else if ((0x0000000500000000ULL == (0x0000000700000000ULL 
+                                              & (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                                  << 0x00000020U) 
+                                                 | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))))) {
+            if ((3U <= vlSelfRef.SDRAM__DOT__cycle_counter)) {
+                if ((8U > vlSelfRef.SDRAM__DOT__burst_counter)) {
+                    __Vdly__SDRAM__DOT__burst_counter 
+                        = ((IData)(1U) + vlSelfRef.SDRAM__DOT__burst_counter);
+                    vlSelfRef.ReadReady = 1U;
+                    vlSelfRef.Read_data = vlSelfRef.Data_bus;
+                    vlSelfRef.SDRAM__DOT__output_enable = 0U;
+                }
+            }
+        } else if ((0x0000000400000001ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
                                                << 0x00000020U) 
                                               | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) {
             vlSelfRef.RAS = 1U;
             vlSelfRef.CAS = 0U;
-            vlSelfRef.WE = 1U;
+            vlSelfRef.WE = 0U;
             vlSelfRef.Address_out = (0x00000400U | 
                                      (0x000003ffU & 
                                       (vlSelfRef.SDRAM__DOT__Address_buffer 
                                        >> 0x0000000dU)));
-        } else {
+        } else if ((0x000000040000000aULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                               << 0x00000020U) 
+                                              | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) {
             __Vdly__SDRAM__DOT__STATE = 0U;
             __Vdly__SDRAM__DOT__cycle_counter = 0U;
             vlSelfRef.busy = 0U;
+            __Vdly__SDRAM__DOT__burst_counter = 0U;
+            vlSelfRef.SDRAM__DOT__output_enable = 0U;
+            vlSelfRef.WriteReady = 0U;
+        } else if ((0x0000000400000000ULL == (0x0000000700000000ULL 
+                                              & (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                                  << 0x00000020U) 
+                                                 | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter)))))) {
+            __Vdly__SDRAM__DOT__burst_counter = ((IData)(1U) 
+                                                 + vlSelfRef.SDRAM__DOT__burst_counter);
+            vlSelfRef.SDRAM__DOT__Data_buffer = vlSelfRef.Data_in;
+            if ((8U >= vlSelfRef.SDRAM__DOT__burst_counter)) {
+                vlSelfRef.SDRAM__DOT__output_enable = 1U;
+            }
+        } else if ((0x0000000100000004ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
+                                               << 0x00000020U) 
+                                              | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) {
+            __Vdly__SDRAM__DOT__refresh_counter = (vlSelfRef.SDRAM__DOT__refresh_counter 
+                                                   - (IData)(0x00000195U));
+            __Vdly__SDRAM__DOT__STATE = 0U;
+            vlSelfRef.busy = 0U;
+            __Vdly__SDRAM__DOT__refresh_needed = 0U;
         }
-    } else if ((0x0000000400000002ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                           << 0x00000020U) 
-                                          | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) {
-        vlSelfRef.RAS = 1U;
-        vlSelfRef.CAS = 0U;
-        vlSelfRef.WE = 0U;
-        vlSelfRef.Address_out = (0x00000400U | (0x000003ffU 
-                                                & (vlSelfRef.SDRAM__DOT__Address_buffer 
-                                                   >> 0x0000000dU)));
-    } else if ((0x000000040000000fULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                           << 0x00000020U) 
-                                          | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) {
-        __Vdly__SDRAM__DOT__STATE = 0U;
-        __Vdly__SDRAM__DOT__cycle_counter = 0U;
-        vlSelfRef.busy = 0U;
-    } else if ((0x0000000100000002ULL == (((QData)((IData)(vlSelfRef.SDRAM__DOT__STATE)) 
-                                           << 0x00000020U) 
-                                          | (QData)((IData)(vlSelfRef.SDRAM__DOT__cycle_counter))))) {
-        __Vdly__SDRAM__DOT__refresh_counter = (vlSelfRef.SDRAM__DOT__refresh_counter 
-                                               - (IData)(0x00000195U));
-        __Vdly__SDRAM__DOT__STATE = 0U;
-        vlSelfRef.busy = 0U;
-        __Vdly__SDRAM__DOT__refresh_needed = 0U;
+        __Vdly__SDRAM__DOT__refresh_needed = (0x00000195U 
+                                              <= vlSelfRef.SDRAM__DOT__refresh_counter);
     }
-    __Vdly__SDRAM__DOT__refresh_needed = (0x00000195U 
-                                          <= vlSelfRef.SDRAM__DOT__refresh_counter);
-    vlSelfRef.SDRAM__DOT__STATE = __Vdly__SDRAM__DOT__STATE;
+    vlSelfRef.DQM_out = 0U;
     vlSelfRef.SDRAM__DOT__refresh_needed = __Vdly__SDRAM__DOT__refresh_needed;
     vlSelfRef.SDRAM__DOT__Address_buffer = __Vdly__SDRAM__DOT__Address_buffer;
     vlSelfRef.SDRAM__DOT__cycle_counter = __Vdly__SDRAM__DOT__cycle_counter;
+    vlSelfRef.SDRAM__DOT__burst_counter = __Vdly__SDRAM__DOT__burst_counter;
+    vlSelfRef.SDRAM__DOT__STATE = __Vdly__SDRAM__DOT__STATE;
     vlSelfRef.SDRAM__DOT__refresh_counter = __Vdly__SDRAM__DOT__refresh_counter;
+    vlSelfRef.Data_bus = (vlSelfRef.SDRAM__DOT__Data_buffer 
+                          & (- (IData)((IData)(vlSelfRef.SDRAM__DOT__output_enable))));
 }
 
 void VSDRAM___024root___trigger_orInto__act_vec_vec(VlUnpacked<QData/*63:0*/, 1> &out, const VlUnpacked<QData/*63:0*/, 1> &in) {
@@ -280,7 +335,7 @@ void VSDRAM___024root___eval(VSDRAM___024root* vlSelf) {
 #ifdef VL_DEBUG
             VSDRAM___024root___dump_triggers__act(vlSelfRef.__VnbaTriggered, "nba"s);
 #endif
-            VL_FATAL_MT("/mnt/c/Repositories/Sipeed-TangNano-20k-SDRAM/fpga_project/src/SDRAM.v", 14, "", "DIDNOTCONVERGE: NBA region did not converge after '--converge-limit' of 10000 tries");
+            VL_FATAL_MT("/mnt/c/Repositories/Sipeed-TangNano-20k-SDRAM/fpga_project/src/SDRAM.v", 15, "", "DIDNOTCONVERGE: NBA region did not converge after '--converge-limit' of 10000 tries");
         }
         __VnbaIterCount = ((IData)(1U) + __VnbaIterCount);
         vlSelfRef.__VactIterCount = 0U;
@@ -289,7 +344,7 @@ void VSDRAM___024root___eval(VSDRAM___024root* vlSelf) {
 #ifdef VL_DEBUG
                 VSDRAM___024root___dump_triggers__act(vlSelfRef.__VactTriggered, "act"s);
 #endif
-                VL_FATAL_MT("/mnt/c/Repositories/Sipeed-TangNano-20k-SDRAM/fpga_project/src/SDRAM.v", 14, "", "DIDNOTCONVERGE: Active region did not converge after '--converge-limit' of 10000 tries");
+                VL_FATAL_MT("/mnt/c/Repositories/Sipeed-TangNano-20k-SDRAM/fpga_project/src/SDRAM.v", 15, "", "DIDNOTCONVERGE: Active region did not converge after '--converge-limit' of 10000 tries");
             }
             vlSelfRef.__VactIterCount = ((IData)(1U) 
                                          + vlSelfRef.__VactIterCount);
@@ -310,9 +365,6 @@ void VSDRAM___024root___eval_debug_assertions(VSDRAM___024root* vlSelf) {
     }
     if (VL_UNLIKELY(((vlSelfRef.clk & 0xfeU)))) {
         Verilated::overWidthError("clk");
-    }
-    if (VL_UNLIKELY(((vlSelfRef.clke & 0xfeU)))) {
-        Verilated::overWidthError("clke");
     }
     if (VL_UNLIKELY(((vlSelfRef.write & 0xfeU)))) {
         Verilated::overWidthError("write");

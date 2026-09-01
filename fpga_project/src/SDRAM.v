@@ -29,7 +29,6 @@ module SDRAM
 
     input reg reset, // start the SDRAM 
     input reg clk,
-    input reg clke, // Enable controller
 
     output wire CS,  // chip select
     output reg CAS, // Col to access
@@ -43,11 +42,15 @@ module SDRAM
     input write,
     input read,
     input[22:0] Address_in,
+    input[31:0] Data_in,
 
     inout[31:0] Data_bus,
     
+    output reg ReadReady,
+    output reg WriteReady,
+
     output reg[1:0] Bank_Bits_out, // Bank adress 
-    output reg[10:0] Address_ou, // Input adress bus
+    output reg[10:0] Address_out, // Input adress bus
 
     output reg[31:0] Read_data
 
@@ -105,169 +108,160 @@ reg startRefreshCount;
 reg refresh_needed;
 reg[2:0] STATE;
 
-reg[4:0] burst_counter;
 reg[31:0] cycle_counter; // Current instruction cycle
 reg[31:0] refresh_counter; // refresh manager
 
 reg [22:0]Address_buffer;   // Holds current address
 reg [31:0]Data_buffer;      // Data address to write to 
-reg output_enable;
 
 assign CS = 0; // Chip select is active low , allows chip to always run
 
-assign Data_bus = output_enable ? Data_buffer : HIGHZ; 
+assign Data_bus = WriteReady ? Data_buffer : HIGHZ; 
+
 
 // state logic here 
+
 always @(posedge clk) begin
-    cycle_counter   <= cycle_counter + 1;
+    
+    cycle_counter  <= cycle_counter + 1;
+    DQM_out <= 0;
 
     if( startRefreshCount) refresh_counter <= refresh_counter + 1;
     
-    DQM_out <= 0;
-
     if(reset) begin
         cycle_counter <= 0;
+
+        refresh_counter <= 0;
+        refresh_timer <= 0;
         startRefreshCount <= 0;
-        burst_counter <= 0;
         STATE <= STARTUP; 
-        output_enable <= 0;       
+
+        ReadReady <= 0;
+        WriteReady <= 0;
+        busy <= 0;
+
     end
+    else begin
+        casez ( { STATE , cycle_counter} ) 
+            
+            { STARTUP , DONTCARE } : begin
+                // wait 200us
+                if( cycle_counter >= STARTUP_WAIT ) begin
+                    STATE <= CONFIG;
+                    refresh_counter <= 0;
+                    refresh_needed <= 0;
+                    cycle_counter <= 0;
+                end
 
+            end 
+            
+            { CONFIG , 32'b0 } : begin
+                // Precharge
+                Address_out[10] <= 1'b1;
+                { RAS , CAS , WE} <= PRECHARGE; 
+            end
+            // Refresh 1 and 2
+            { CONFIG , T_RP }, 
+            { CONFIG , T_RP + T_RC} : begin
+                //Refresh
+                {RAS , CAS , WE} <= AUTOREFRESH;
 
-end
+            end
 
-always @(posedge clk) begin
-    
-    
-    casez ( { STATE , cycle_counter} ) 
-        
-        { STARTUP , DONTCARE } : begin
-            // wait 200us
-            if( cycle_counter >= STARTUP_WAIT ) begin
-                STATE <= CONFIG;
-                refresh_counter <= 0;
-                refresh_needed <= 0;
+            // Set the mode register
+            { CONFIG , T_RP + T_RC + T_RC} : begin
+                
+                { RAS , CAS , WE} <= MODEREG_SET;
+                Address_out <= MODEREG_CONFIG;
+            end
+
+            // Set to the correct state
+            { CONFIG , T_RP + T_RC + T_RC + T_MRD } : begin
+                STATE <= IDLE;
+                busy <= 0;
+                startRefreshCount <= 1;
                 cycle_counter <= 0;
             end
 
-        end 
-        
-        { CONFIG , 32'b0 } : begin
-            // Precharge
-            Address_out[10] <= 1'b1;
-            { RAS , CAS , WE} <= PRECHARGE; 
-        end
-        // Refresh 1 and 2
-        { CONFIG , T_RP }, 
-        { CONFIG , T_RP + T_RC} : begin
-            //Refresh
-            {RAS , CAS , WE} <= AUTOREFRESH;
 
-        end
+            /**/
+            { IDLE , DONTCARE } : if ( refresh_needed ) begin
+                STATE <= REFRESH;
+                { RAS , CAS , WE} <= REFRESH;
+                cycle_counter <= 1;
+                busy <= 1;
 
-        // Set the mode register
-        { CONFIG , T_RP + T_RC + T_RC} : begin
-            
-            { RAS , CAS , WE} <= MODEREG_SET;
-            Address_out <= MODEREG_CONFIG;
-        end
+            end 
+            else if( read | write) begin
 
-        // Set to the correct state
-        { CONFIG , T_RP + T_RC + T_RC + T_MRD } : begin
-            STATE <= IDLE;
-            busy <= 0;
-            startRefreshCount <= 1;
-            cycle_counter <= 0;
-        end
+            {RAS , CAS , WE} <= BANK_ACTIVATE;
+            Bank_Bits_out <= BANK_BITS;
+            Address_out <=  RAS_BITS;
+            STATE <= read ? READ : WRITE;
 
 
-        /**/
-        { IDLE , DONTCARE } : if ( refresh_needed ) begin
-            STATE <= REFRESH;
-            { RAS , CAS , WE} <= REFRESH;
+            Address_buffer <= Address_in;
+
+            // write then load data to write
+            if( write ) Data_buffer <= Data_in;
+            // reset the cycle counter for the next operation
             cycle_counter <= 1;
-            busy <= 1;
+            busy <= 1; // Instruction start
 
-        end 
-        else if( read | write) begin
-
-        {RAS , CAS , WE} <= BANK_ACTIVATE;
-        Bank_Bits_out <= BANK_BITS;
-        Address_out <=  RAS_BITS;
-        STATE <= read ? READ : WRITE;
-
-        Address_buffer <= Address_in;
-
-        // write then load data to write
-        if( write ) Data_buffer <= Data_bus;
-        // reset the cycle counter for the next operation
-        cycle_counter <= 1;
-        busy <= 1; // Instruction start
-        burst_counter <= 0;
-
-        end
-
-
-        { READ , T_RCD } : begin
-
-            {RAS , CAS , WE} <= READ; // read instruction
-            Address_out[10:0] <= {1'b1 , CAS_BITS}; // Precharge and CAS
-
-        end
-        { READ , T_RCD + T_CAS + T_BL + T_RP} : begin
-            STATE <= IDLE;
-            cycle_counter <= 0;
-            busy <= 0;
-            burst_counter <= 0;
-            output_enable <= 0;
-        end 
-        { READ , HIGHZ } if( cycle_counter >= T_RCD + T_CAS) begin
-
-            if( burst_counter < T_BL ) begin
-                Read_data <= Data_bus;
-                output_enable <=  0;
-                burst_counter <= burst_counter + 1;  
             end
-        end 
-            
 
 
+            { READ , T_RCD } : begin
 
-        {WRITE , T_RCD } : begin
-            
-            { RAS , CAS , WE} <= WRITE;
-            Address_out[10:0] <= { 1'b1 , CAS_BITS};
+                {RAS , CAS , WE} <= READ; // read instruction
+                Address_out[10:0] <= {1'b1 , CAS_BITS}; // Precharge and CAS
 
-        end
-        {WRITE , T_RCD + T_BL + T_RP}: begin
-            STATE <= IDLE;
-            cycle_counter <= 0;
-            busy <= 0;
-            burst_counter <= 0;
-            output_enable <= 0;
-        end
-        {WRITE , HIGHZ} : begin
+            end
+            { READ , T_RCD + T_CAS + T_BL + T_RP} : begin
+                STATE <= IDLE;
+                cycle_counter <= 0;
+                busy <= 0;
+                ReadReady <= 0;
+            end 
+            { READ , HIGHZ } : if( cycle_counter >= T_RCD + T_CAS) begin
 
-                burst_counter <= burst_counter + 1;
-                if( burst_counter <= T_BL) begin
-                    output_enable <= 1'b1;
-                end   
-        end
+                ReadReady <= cycle_counter >= T_RCD + T_CAS + 1;
+                Read_data <= Data_bus;
 
-        {REFRESH , T_RC } : begin
-            STATE <= IDLE;
-            busy <= 0;
-            refresh_counter <= refresh_counter - CYCLES_TO_REFRESH;
-            refresh_needed <= 0;
-        end
-
-
-        // Data_bus driver
-         
+            end 
                 
-    endcase
-    
-    refresh_needed <= (refresh_counter >= CYCLES_TO_REFRESH); 
+
+
+
+            {WRITE , T_RCD } : begin
+                
+                WriteReady <= 1;
+                { RAS , CAS , WE} <= WRITE;
+                Address_out[10:0] <= { 1'b1 , CAS_BITS};
+
+            end
+            {WRITE , T_RCD + T_BL + T_RP}: begin
+                STATE <= IDLE;
+                cycle_counter <= 0;
+                busy <= 0;
+                WriteReady <= 0;
+            end
+            {WRITE , HIGHZ} : begin
+                
+                WriteReady <= cycle_counter < T_RCD + T_BL;
+                Data_buffer <= Data_in;
+            end
+
+            {REFRESH , T_RC } : begin
+                STATE <= IDLE;
+                busy <= 0;
+                refresh_counter <= refresh_counter - CYCLES_TO_REFRESH;
+                refresh_needed <= 0;
+            end            
+        endcase
+        
+        refresh_needed <= (refresh_counter >= CYCLES_TO_REFRESH);
+    end 
 
 end
 

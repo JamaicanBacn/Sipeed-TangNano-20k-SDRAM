@@ -1,0 +1,40 @@
+[*]
+[*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
+[*] Mon Aug 31 23:15:58 2026
+[*]
+[dumpfile] "/mnt/c/Repositories/Sipeed-TangNano-20k-SDRAM/Waveforms/Write.fst"
+[dumpfile_mtime] "Mon Aug 31 23:01:03 2026"
+[dumpfile_size] 1617
+[savefile] "/mnt/c/Repositories/Sipeed-TangNano-20k-SDRAM/Waveforms/Write.gtkw"
+[timestart] 54400
+[size] 1920 993
+[pos] -27 -24
+*-5.000000 54495 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[sst_width] 297
+[signals_width] 278
+[sst_expanded] 1
+[sst_vpaned_height] 294
+@28
+TOP.RAS
+TOP.CAS
+TOP.WE
+TOP.SDRAM.output_enable
+TOP.SDRAM.refresh_needed
+TOP.SDRAM.read
+TOP.write
+TOP.busy
+@29
+TOP.clk
+@28
+TOP.SDRAM.refresh_needed
+@22
+TOP.SDRAM.refresh_counter[31:0]
+@28
+TOP.SDRAM.STATE[2:0]
+@22
+TOP.SDRAM.cycle_counter[31:0]
+TOP.SDRAM.Data_buffer[31:0]
+TOP.SDRAM.Data_bus[31:0]
+[pattern_trace] 1
+[pattern_trace] 0

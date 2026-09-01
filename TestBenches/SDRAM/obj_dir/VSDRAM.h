@@ -31,7 +31,6 @@ class alignas(VL_CACHE_LINE_BYTES) VSDRAM VL_NOT_FINAL : public VerilatedModel {
     // propagate new values into/out from the Verilated model.
     VL_IN8(&clk,0,0);
     VL_IN8(&reset,0,0);
-    VL_IN8(&clke,0,0);
     VL_OUT8(&CS,0,0);
     VL_OUT8(&CAS,0,0);
     VL_OUT8(&RAS,0,0);
@@ -40,10 +39,14 @@ class alignas(VL_CACHE_LINE_BYTES) VSDRAM VL_NOT_FINAL : public VerilatedModel {
     VL_OUT8(&DQM_out,3,0);
     VL_IN8(&write,0,0);
     VL_IN8(&read,0,0);
+    VL_OUT8(&ReadReady,0,0);
+    VL_OUT8(&WriteReady,0,0);
     VL_OUT8(&Bank_Bits_out,1,0);
     VL_OUT16(&Address_out,10,0);
     VL_IN(&Address_in,22,0);
+    VL_IN(&Data_in,31,0);
     VL_INOUT(&Data_bus,31,0);
+    VL_OUT(&Read_data,31,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.

@@ -51,9 +51,6 @@ int main( int argc , char** argv )
 
     return 0;
 
-    trace->open("Waveforms/Refresh.fst");
-    StartupInput( context , dut , trace);
-    trace->close();
 
 }
 
@@ -61,7 +58,6 @@ void StartupInput(VerilatedContext* context , VSDRAM* dut , VerilatedFstC* trace
 {
     dut->clk = 0;
     dut->reset = 0;
-    dut->clke = 0;
 
     dut->read = 0;
     dut->write = 0;
@@ -76,7 +72,6 @@ void StartupInput(VerilatedContext* context , VSDRAM* dut , VerilatedFstC* trace
 
     dut->reset = 1;
     dut->clk = 1;
-    dut->clke = 1;
     dut->eval();
     trace->dump(context->time());
     context->timeInc(CLK_HALF_PERIOD);
@@ -146,8 +141,9 @@ void WriteInput( VerilatedContext* context , VSDRAM* dut , VerilatedFstC* trace)
     dut->read = 0;
     dut->write = 1;
     dut->Address_in = 0x3BEEF;
+    dut->Data_in = 0xDEADBEEF;
 
-    for( int i = 0; i < 1 +  T_RCD + T_WR + T_BL + T_RP ; i++)
+    for( int i = 0; i < 10 +  T_RCD + T_WR + T_BL + T_RP ; i++)
     {
         dut->clk = 1;
         dut->eval();
@@ -158,11 +154,14 @@ void WriteInput( VerilatedContext* context , VSDRAM* dut , VerilatedFstC* trace)
         dut->eval();
         trace->dump(context->time());
         context->timeInc(CLK_HALF_PERIOD);
+
+        if( i%2 == 0) dut->Data_in = 0xDEADBEEF;
+        else dut->Data_in = 0xCAFECAFE;
     }
 
-    context->timeInc(CLK_PERIOD);
+    context->timeInc(CLK_HALF_PERIOD);
     dut->eval();
     trace->dump(context->time());
-    context->timeInc(CLK_PERIOD);
+    context->timeInc(CLK_HALF_PERIOD);
 }
 void RefreshInput();

@@ -1,0 +1,38 @@
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c_top.v'
+Analyzing included file 'apb_i2c_config.vh'("C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c_top.v":12)
+Back to file 'C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c_top.v'("C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c_top.v":12)
+Analyzing included file 'C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c_const.vh'("C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c_top.v":13)
+Back to file 'C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c_top.v'("C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c_top.v":13)
+Analyzing Verilog file 'C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c.v'
+Analyzing included file 'apb_i2c_config.vh'("C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c.v":836)
+Back to file 'C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c.v'("C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c.v":836)
+Analyzing included file 'C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c_const.vh'("C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c.v":836)
+Back to file 'C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c.v'("C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c.v":836)
+Compiling module 'APB_I2C_Top'("C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c_top.v":17)
+Compiling module '**'("C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c.v":836)
+Extracting RAM for identifier '**'("C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c.v":836)
+NOTE  (EX0101) : Current top module is "APB_I2C_Top"
+[5%] Running netlist conversion ...
+WARN  (CV0020) : Input pwdata[31:29] is unused("C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c_top.v":46)
+WARN  (CV0020) : Input pwdata[15:14] is unused("C:\Gowin\Gowin_V1.9.12.03_x64\IDE\ipcore\APBI2C\data\apb_i2c_top.v":46)
+Running device independent optimization ...
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...
+[60%] Tech-Mapping Phase 0 completed
+[65%] Tech-Mapping Phase 1 completed
+[75%] Tech-Mapping Phase 2 completed
+[80%] Tech-Mapping Phase 3 completed
+[90%] Tech-Mapping Phase 4 completed
+[95%] Generate netlist file "C:\Repositories\Sipeed-TangNano-20k-SDRAM\fpga_project\src\apb_i2c\temp\APBI2c\apb_i2c.vg" completed
+Generate template file "C:\Repositories\Sipeed-TangNano-20k-SDRAM\fpga_project\src\apb_i2c\temp\APBI2c\apb_i2c_tmp.v" completed
+[100%] Generate report file "C:\Repositories\Sipeed-TangNano-20k-SDRAM\fpga_project\src\apb_i2c\temp\APBI2c\apb_i2c_syn.rpt.html" completed
+GowinSynthesis finish

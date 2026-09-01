@@ -11,7 +11,7 @@ VSDRAM__Syms::VSDRAM__Syms(VerilatedContext* contextp, const char* namep, VSDRAM
     , TOP{this, namep}
 {
     // Check resources
-    Verilated::stackCheck(154);
+    Verilated::stackCheck(224);
     // Setup sub module instances
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-9);

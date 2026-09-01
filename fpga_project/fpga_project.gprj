@@ -7,6 +7,7 @@
     <FileList>
         <File path="src/SDRAM.v" type="file.verilog" enable="1"/>
         <File path="src/SDRAMTop.sv" type="file.verilog" enable="1"/>
+        <File path="src/apb_i2c/apb_i2c.v" type="file.verilog" enable="1"/>
         <File path="src/gowin_rpll/gowin_rpll.v" type="file.verilog" enable="1"/>
         <File path="src/rpll/gowin_rpll.v" type="file.verilog" enable="1"/>
         <File path="src/rpll/gowin_rpll_tmp.v" type="file.verilog" enable="1"/>

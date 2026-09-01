@@ -31,15 +31,15 @@ void VSDRAM___024root__trace_chg_0_sub_0(VSDRAM___024root* vlSelf, VerilatedFst:
         bufp->chgBit(oldp+3,(vlSelfRef.SDRAM__DOT__startRefreshCount));
         bufp->chgBit(oldp+4,(vlSelfRef.SDRAM__DOT__refresh_needed));
         bufp->chgCData(oldp+5,(vlSelfRef.SDRAM__DOT__STATE),3);
-        bufp->chgCData(oldp+6,(vlSelfRef.SDRAM__DOT__burst_counter),5);
+        bufp->chgIData(oldp+6,(vlSelfRef.SDRAM__DOT__burst_counter),32);
         bufp->chgIData(oldp+7,(vlSelfRef.SDRAM__DOT__cycle_counter),32);
         bufp->chgIData(oldp+8,(vlSelfRef.SDRAM__DOT__refresh_counter),32);
         bufp->chgIData(oldp+9,(vlSelfRef.SDRAM__DOT__Address_buffer),23);
         bufp->chgIData(oldp+10,(vlSelfRef.SDRAM__DOT__Data_buffer),32);
+        bufp->chgBit(oldp+11,(vlSelfRef.SDRAM__DOT__output_enable));
     }
-    bufp->chgBit(oldp+11,(vlSelfRef.reset));
-    bufp->chgBit(oldp+12,(vlSelfRef.clk));
-    bufp->chgBit(oldp+13,(vlSelfRef.clke));
+    bufp->chgBit(oldp+12,(vlSelfRef.reset));
+    bufp->chgBit(oldp+13,(vlSelfRef.clk));
     bufp->chgBit(oldp+14,(vlSelfRef.CS));
     bufp->chgBit(oldp+15,(vlSelfRef.CAS));
     bufp->chgBit(oldp+16,(vlSelfRef.RAS));
@@ -49,8 +49,13 @@ void VSDRAM___024root__trace_chg_0_sub_0(VSDRAM___024root* vlSelf, VerilatedFst:
     bufp->chgBit(oldp+20,(vlSelfRef.write));
     bufp->chgBit(oldp+21,(vlSelfRef.read));
     bufp->chgIData(oldp+22,(vlSelfRef.Address_in),23);
-    bufp->chgCData(oldp+23,(vlSelfRef.Bank_Bits_out),2);
-    bufp->chgSData(oldp+24,(vlSelfRef.Address_out),11);
+    bufp->chgIData(oldp+23,(vlSelfRef.Data_in),32);
+    bufp->chgIData(oldp+24,(vlSelfRef.Data_bus),32);
+    bufp->chgBit(oldp+25,(vlSelfRef.ReadReady));
+    bufp->chgBit(oldp+26,(vlSelfRef.WriteReady));
+    bufp->chgCData(oldp+27,(vlSelfRef.Bank_Bits_out),2);
+    bufp->chgSData(oldp+28,(vlSelfRef.Address_out),11);
+    bufp->chgIData(oldp+29,(vlSelfRef.Read_data),32);
 }
 
 void VSDRAM___024root__trace_cleanup(void* voidSelf, VerilatedFst* /*unused*/) {
