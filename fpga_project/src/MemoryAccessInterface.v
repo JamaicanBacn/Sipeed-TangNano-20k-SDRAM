@@ -1,11 +1,14 @@
 
 
-module CacheAccessControl
+module MemoryAccessInterface
 ( // determine type : SB , SH , SW ect.
     input wire[31:0] Data_in,
+    input wire[22:0] Address_in,
+    
     input wire[31:0] Instruction_in,
 
-    output wire[3:0] Data_out
+    output wire[31:0] Data_out, // 
+    
 );
 
 localparam Store = 7'b0100011;
@@ -48,8 +51,8 @@ module SDRAMTop(
 
 input wire sys_clk,
 input wire[22:0] Address_in,
-input wire[31:0] Instruction_in,
 input reg[255:0] CacheLine_in,
+input wire[31:0] Instruction_in,
 
 input wire read,
 input wire write,
@@ -83,12 +86,21 @@ reg ReadReady;
 reg WriteReady;
 reg [5:0] BurstCounter;
 
-reg[31:0] Data_in;
+reg[31:0] Unmasked_data;
+reg[31:0] Data_to_sdram;
 
 Gowin_rPLL pll(
     .clkout(clk),           // Main clock
     .clkoutp(clk_sdram),    // Phase shifted clock for SDRAM
     .clkin(sys_clk)         // 27Mhz system clock
+);
+
+MemoryAccessInterface MAI(
+    .Data_in(Unmasked_data),
+    .Address_in(Address_in),
+    .Instruction_in(Instruction_in), // not used in this context
+
+    .Data_out(Data_to_sdram) // Data to be written to SDRAM,
 );
 
 SDRAM RAM(
@@ -98,7 +110,7 @@ SDRAM RAM(
     .read(read),
 
     .Address_in(Address_in),
-    .Data_in(Data_in),
+    .Data_in(Data_to_sdram),
 
     .busy(busy),
 
@@ -123,7 +135,7 @@ always @(posedge clk_sdram ) begin
         BurstCounter <= BurstCounter + 1;
     end
     else if( WriteReady && BurstCounter < 8 ) begin
-        Data_in <= CacheLine_in[ 32 * (BurstCounter + 1) -1 : 32 * BurstCounter];
+        Unmasked_data <= CacheLine_in[ 32 * (BurstCounter + 1) -1 : 32 * BurstCounter];
         BurstCounter <= BurstCounter + 1; 
     end
     
